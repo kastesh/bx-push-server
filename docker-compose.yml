@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  redis:
+    build: ./redis
+    container_name: bxRedis
+    volumes:
+      - ./logs/redis:/var/log/redis
+
+  pub:
+    build: ./push
+    container_name: bxPushPub
+    env_file:
+      - .bitrix.env
+    environment:
+      - PUSHROLE=pub
+    volumes:
+      - ./logs/push-server:/var/log/push-server
+    depends_on:
+      - redis
+    restart: always
+
+  sub:
+    build: ./push
+    container_name: bxPushSub
+    env_file:
+      - .bitrix.env
+    environment:
+      - PUSHROLE=sub
+    volumes:
+      - ./logs/push-server:/var/log/push-server
+    depends_on:
+      - redis
+    restart: always
+
