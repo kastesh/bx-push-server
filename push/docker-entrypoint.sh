@@ -48,15 +48,26 @@ fi
 
 # templates for pub and sub services
 [[ ! -d /etc/push-server ]] && mkdir /etc/push-server
-cp -fv etc/push-server/$PUB_TMPL /etc/push-server/
-cp -fv etc/push-server/$SUB_TMPL /etc/push-server/
+
+if [[ ! -f /etc/push-server/$PUB_TMPL ]]; then
+    echo -n "Copy template: "
+    cp -fv etc/push-server/$PUB_TMPL /etc/push-server/
+fi
+if [[ ! -f /etc/push-server/$SUB_TMPL ]]; then
+    echo -n "Copy template: "
+    cp -fv etc/push-server/$SUB_TMPL /etc/push-server/
+fi
 
 # service start script
 cp -fv etc/init.d/push-server-multi /usr/local/bin
 chmod 755 /usr/local/bin/push-server-multi
 
 # generate configs
-if [[ ! -f /etc/push-server/push-server-sub-8010.json ]]; then
+if [[ ( $PUSHROLE == "all" || $PUSHROLE == "sub")  && \
+     ! -f /etc/push-server/push-server-sub-8010.json ]]; then
+    /usr/local/bin/push-server-multi configs $PUSHROLE
+elif [[ $PUSHROLE == "pub" && \
+    ! -f /etc/push-server/push-server-pub-9010.json ]]; then
     /usr/local/bin/push-server-multi configs $PUSHROLE
 fi
 

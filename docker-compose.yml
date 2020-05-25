@@ -33,3 +33,17 @@ services:
       - redis
     restart: always
 
+  balancer:
+    build: ./balancer
+    container_name: bxBalancer
+    env_file:
+      - .bitrix.env
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - sub
+      - pub
+    restart: always
+

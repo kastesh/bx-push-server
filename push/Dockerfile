@@ -15,6 +15,8 @@ RUN tar xzvvf push-server.tar.gz && \
 RUN npm install --production
 
 COPY docker-entrypoint.sh /usr/local/bin/
+COPY etc/push-server-pub-__PORT__.json /etc/push-server/push-server-pub-__PORT__.json
+COPY etc/push-server-sub-__PORT__.json /etc/push-server/push-server-sub-__PORT__.json
 
 RUN chmod 0755 /usr/local/bin/docker-entrypoint.sh
 
